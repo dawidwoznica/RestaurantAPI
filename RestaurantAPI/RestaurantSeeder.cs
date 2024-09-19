@@ -9,10 +9,13 @@ namespace RestaurantAPI
         {
             if (dbContext.Database.CanConnect())
             {
-                var pendingMigrations = dbContext.Database.GetPendingMigrations();
+                if (dbContext.Database.IsRelational())
+                {
+                    var pendingMigrations = dbContext.Database.GetPendingMigrations();
 
-                if (pendingMigrations != null && pendingMigrations.Any())
-                    dbContext.Database.Migrate();
+                    if (pendingMigrations != null && pendingMigrations.Any())
+                        dbContext.Database.Migrate();
+                }
 
                 if (!dbContext.Roles.Any())
                 {

@@ -10,15 +10,8 @@ namespace RestaurantAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class RestaurantController : ControllerBase
+    public class RestaurantController(IRestaurantService service) : ControllerBase
     {
-        private readonly IRestaurantService service;
-
-        public RestaurantController(IRestaurantService service)
-        {
-            this.service = service;
-        }
-
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Manager")]
         public ActionResult Update([FromRoute] int id, [FromBody] UpdateRestaurantDto dto)
@@ -38,6 +31,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         //[Authorize(Policy = "AtLeast20")]
         //[Authorize(Policy = "CreatedAtLeast2Restaurants")]
         public ActionResult<PagedResult<RestaurantDto>> GetAll([FromQuery] RestaurantQuery query)
@@ -57,11 +51,8 @@ namespace RestaurantAPI.Controllers
 
 
         [HttpPost]
-        [Authorize(Policy = "AtLeast20")]
-        [Authorize(Roles = "Admin,Manager")]
         public ActionResult CreateRestaurant([FromBody] CreateRestaurantDto dto)
         {
-            var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var id = service.Create(dto);
 
             return Created($"/api/restaurant/{id}", null);
