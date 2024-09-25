@@ -16,8 +16,9 @@ namespace RestaurantAPI.Models.Validators
                 if (!allowedPageSizes.Contains(value))
                     context.AddFailure("PageSize", $"PageSize must be in [{string.Join(",", allowedPageSizes)}]");
             });
-            RuleFor(x => x.SortBy).Must(value => string.IsNullOrEmpty(value)
-                                                 || sortByColumnNames.Contains(value)).WithMessage($"SortBy is optional, or must be in [{string.Join(",", sortByColumnNames)}]");
+            RuleFor(x => x.SortBy)
+                .Must(value => string.IsNullOrEmpty(value) || sortByColumnNames.Contains(value))
+                .WithMessage($"SortBy is optional, or must be in [{string.Join(",", sortByColumnNames)}]");
         }
     }
 }
